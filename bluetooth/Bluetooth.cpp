@@ -20,7 +20,7 @@ Bluetooth::Bluetooth(uint16_t piniConfig[], uint16_t baund)
   bt = new SoftwareSerial (piniConfig[0], piniConfig[1]); //RX, TX (Switched on the Bluetooth - RX -> TX | TX -> RX)
   uint16_t btdata; // the data given from the computer
   (*bt).begin(baund);
-  (*bt).println ("Tramsmission start!");
+  //(*bt).println ("Tramsmission start!");
   Serial.print("%%start##");
 }
 
@@ -35,17 +35,21 @@ Bluetooth* Bluetooth::getInstance(uint16_t piniConfig[], uint16_t baundRate)
 
 void Bluetooth::trimiteDateRaspberry(uint8_t data[5])
 {
-  String mesaj = "";
+  int i;
+  //String mesaj = "";
+  //(*bt).println ("s a trimis");
+  Serial.println("in functie");
   uint8_t trimiteDate[9];
   construireFrame(data, trimiteDate);
+  Serial.println("a iesit din frame ");
   String transmite = trimiteDate;
-  (*bt).println ("s a trimis");
-  (*bt).println(""+transmite);
-  (*bt).print("\n");
-  Serial.print(transmite+"\n");
-  (*bt).println ("s-a trimis un pachet");
-  (*bt).println("\n");
-  delay (200); //prepare for data (2s)
+  (*bt).print(" \t");
+  (*bt).println(transmite);
+  //(*bt).print("\n");
+  Serial.println(transmite);
+  String fr = "";
+  for (i = 0; i < 9; i++) fr += trimiteDate[i];
+  (*bt).print(fr);
 }
 
 void Bluetooth::primesteDateRaspberry()
@@ -74,33 +78,43 @@ void Bluetooth::decodareFrame()
 
 void Bluetooth::construireFrame(uint8_t data[], uint8_t* frame)
 {
- // uint8_t frame[9];
+  //  uint8_t frame[9];
+  Serial.println("a intrat");
+  uint16_t i;
   uint8_t startFrame = 'r';
   uint8_t endFrame = 'c';
   uint8_t detectParitate = 0;
   frame[0] = startFrame;
-
-  for (int i = 0; i < 4; i++)
+  Serial.println("inainte de for");
+  for (i = 0; i <= 4; i++)
   {
+    Serial.println("a intrat in for");
     frame[i + 1] = data[i];
     if (paritate(data[i])) bitWrite(detectParitate, 0, 1);
-    detectParitate << 1;
+    detectParitate = detectParitate << 1;
+
   }
 
   detectParitate >> 1;
   frame[6] = detectParitate;
   frame[7] = endFrame;
   frame[8] = '\0';
-
+  Serial.println("Sfarsit frame");
+  String fr = "";
+  for (i = 0; i < 9; i++) fr += frame[i];
+  Serial.println(fr);
+  //return frame;
+  String frr = frame;
+  Serial.println(frr);
   //return frame;
 }
 
 uint16_t Bluetooth::paritate(uint8_t dist)
 {
   uint16_t sumaBiti = 0;
-  while (dist) {
+  while (dist != 0) {
     if (bitRead(dist, 0)) sumaBiti++;
-    dist >> 1;
+    dist = dist >> 1;
   }
   if ((sumaBiti % 2) == 0) return 0;
   return 1;

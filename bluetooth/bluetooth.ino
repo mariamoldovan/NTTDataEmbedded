@@ -11,7 +11,8 @@ void setup()
 
 void loop()
 {
-  char dateDist[5] = {1, 1, 1, 1, 1};
+  char dateDist[5] = {88, 199, 77, 21, 98};
   (*blue).trimiteDateRaspberry(dateDist);
   //(*blue).primesteDate();
+  delay(1000000);
 }
