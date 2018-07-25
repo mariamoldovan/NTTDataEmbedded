@@ -20,7 +20,7 @@ Bluetooth::Bluetooth(int piniConfig[], int baund)
   bt = new SoftwareSerial (piniConfig[0],piniConfig[1]);  //RX, TX (Switched on the Bluetooth - RX -> TX | TX -> RX)
   int btdata; // the data given from the computer
   (*bt).begin(baund);
-  (*bt).println ("Message...");
+  //(*bt).println ("Message...");
 }
 
 Bluetooth* Bluetooth::getInstance(int piniConfig[], int baundRate)
@@ -34,18 +34,24 @@ Bluetooth* Bluetooth::getInstance(int piniConfig[], int baundRate)
 
 void Bluetooth::trimiteDate()
 {
-  String mesaj = "";
-
-  if(Serial.available() > 0) {
-    mesaj = Serial.read();
-
-    (*bt).print(mesaj);
-    (*bt).print("\n");
-  }
-
-  (*bt).print ("salut");
-  (*bt).print("\n");
-  delay (2000); //prepare for data (2s)
+//  //String mesaj = "";
+  //double x = 5120000;
+//  
+////  if(Serial.available() > 0) {
+////    mesaj = Serial.read();
+////    x = Serial.
+////    (*bt).print(mesaj);
+////    (*bt).print("\n");
+////    (*bt).print(x);
+////  }
+  //(*bt).print(x);
+  //(*bt).print("\n");
+    (*bt).println ("1234567890");
+    (*bt).println ("0987654321");
+    (*bt).println ("1234653123");
+ // (*bt).println ("sebi");
+  //(*bt).print("\n");
+  //delay (2000); //prepare for data (2s)
 
 }
 
