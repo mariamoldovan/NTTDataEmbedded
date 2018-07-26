@@ -15,15 +15,21 @@
 
 Bluetooth* Bluetooth::INSTANCE = 0;
 
+/**
+  Initializarea pinilor si a frecventei de transmisiea bitilor
+*/
+
 Bluetooth::Bluetooth(uint16_t piniConfig[], uint16_t baund)
 {
   bt = new SoftwareSerial (piniConfig[0], piniConfig[1]); //RX, TX (Switched on the Bluetooth - RX -> TX | TX -> RX)
   uint16_t btdata; // the data given from the computer
   (*bt).begin(baund);
-  //(*bt).println ("Tramsmission start!");
-  Serial.print("%%start##");
 }
 
+/**
+   Functia getInstance() este folosita pentru crearea unui obiect de
+   tip Bluetooth. Se foloseste design patternul Singleton.
+*/
 Bluetooth* Bluetooth::getInstance(uint16_t piniConfig[], uint16_t baundRate)
 {
   if (INSTANCE == 0)
@@ -33,85 +39,95 @@ Bluetooth* Bluetooth::getInstance(uint16_t piniConfig[], uint16_t baundRate)
   return INSTANCE;
 }
 
+/**
+   Functia trimite date este utilizata pentru transmisia datelor
+   pe directia Arduino-Raspberry.
+   Aceasta comunicare se efectueaza prin intermediul unui dispozitiv Bluetooth.
+   Pentru efectuarea comunicarii, folosim functiile din biblioteca SoftwareSerial.
+*/
 void Bluetooth::trimiteDateRaspberry(uint8_t data[5])
 {
-  int i;
-  //String mesaj = "";
-  //(*bt).println ("s a trimis");
-  Serial.println("in functie");
-  uint8_t trimiteDate[9];
-  construireFrame(data, trimiteDate);
-  Serial.println("a iesit din frame ");
-  String transmite = trimiteDate;
-  (*bt).print(" \t");
+  int i; //iteratore");
+  uint8_t frame[9];
+
+  construireFrame(data, frame); //construirea frame-ului care urmeaza sa fie transmis
+
+  String transmite = frame; //conversia la tipul String
+  (*bt).print("\t"); //pentru asigurarea unei transmiteri complete
   (*bt).println(transmite);
-  //(*bt).print("\n");
-  Serial.println(transmite);
-  String fr = "";
-  for (i = 0; i < 9; i++) fr += trimiteDate[i];
-  (*bt).print(fr);
+  (*bt).print("\t"); //pentru asigurarea unei transmiteri complete
 }
 
-void Bluetooth::primesteDateRaspberry()
+uint16_t Bluetooth::primesteDateRaspberry()
 {
-  pinMode(LED_BUILTIN, OUTPUT);
-  uint16_t btdata;
-  if ((*bt).available()) {
-    btdata = (*bt).read();
-    if (btdata == '1') {
-      //if 1
-      digitalWrite (LED_BUILTIN, HIGH);
-      (*bt).println ("LED ON!");
-    }
-    if (btdata == '0') {
-      //if 0
-      digitalWrite (LED_BUILTIN, LOW);
-      (*bt).println ("LED OFF!");
-    }
+  String btdata;
+  Serial.println("Se incepe citirea de la Raspberry");
+  btdata = (*bt).read();
+  Serial.println("s - citit:\t"+btdata);
+  return decodificareFrame(btdata);
+}
+
+int16_t Bluetooth::decodificareFrame(String mesajVolum)
+{
+  Serial.println("in decodare");
+  uint8_t mesajDecod[5], volum;
+  uint8_t i = sizeof(mesajDecod) - 1; //iterator
+  mesajVolum.toCharArray(mesajDecod, sizeof(mesajDecod));
+
+  if (mesajDecod[i] != 'r')return -1;
+
+  volum = mesajDecod[--i];
+  Serial.println(volum);
+  uint16_t sumaBiti = 0;//calculeaza suma bitilor de '1'
+  while (mesajDecod[i] != 0) {
+    Serial.println("in while:");
+    if (bitRead(mesajDecod[i], 0)) sumaBiti++;
+    mesajDecod[i] = mesajDecod[i] >> 1;
+    Serial.println(mesajDecod[i]);
   }
-  delay (100); //prepare for data
-}
-void Bluetooth::decodareFrame()
-{
 
+  if ((bitRead(mesajDecod[--i], 0) + sumaBiti) % 2 != 0) return -1;
+
+  return (int16_t) volum - '0';
 }
 
+
+/**
+   Functia construireFrame se ocupa direct cu asamblarea componentelor unui frame.
+   Structura unui frame este urmatoarea:
+   -se incepe cu litera 'r' pentru marcarea inceputului de frame
+   -se adauga apoi informatiile transmise prin parametrul data
+   -se adauga un caracter pentru detectia erorilor
+   -se adauga caracterul 'c' pentru a marca finalul frame-ului
+   -se adauga caracterul '\0' pentru a marca sfarsitul sirului
+*/
 void Bluetooth::construireFrame(uint8_t data[], uint8_t* frame)
 {
-  //  uint8_t frame[9];
-  Serial.println("a intrat");
-  uint16_t i;
+  uint16_t i;//iterator
   uint8_t startFrame = 'r';
   uint8_t endFrame = 'c';
   uint8_t detectParitate = 0;
   frame[0] = startFrame;
   Serial.println("inainte de for");
-  for (i = 0; i <= 4; i++)
+  for (i = 0; i <= sizeof(frame); i++)
   {
-    Serial.println("a intrat in for");
     frame[i + 1] = data[i];
-    if (paritate(data[i])) bitWrite(detectParitate, 0, 1);
-    detectParitate = detectParitate << 1;
-
+    detectParitate = detectParitate << 1;//se shifteza continutul pentru a adauga urmatorul bit
+    if (paritate(data[i])) bitWrite(detectParitate, 0, 1);//se adauga un bit de paritate pentru fiecare valoare din vectorul data
   }
-
-  detectParitate >> 1;
   frame[6] = detectParitate;
   frame[7] = endFrame;
   frame[8] = '\0';
-  Serial.println("Sfarsit frame");
-  String fr = "";
-  for (i = 0; i < 9; i++) fr += frame[i];
-  Serial.println(fr);
-  //return frame;
-  String frr = frame;
-  Serial.println(frr);
-  //return frame;
 }
 
+/**
+   Functia paritate calculeaza bitul de paritate pentru o valoare transmisa ca parametru
+   si returneaza valoarea 1 daca numarul de biti de 1 din numar este impar
+   si 0 in caz contrar.
+*/
 uint16_t Bluetooth::paritate(uint8_t dist)
 {
-  uint16_t sumaBiti = 0;
+  uint16_t sumaBiti = 0;//calculeaza suma bitilor de '1'
   while (dist != 0) {
     if (bitRead(dist, 0)) sumaBiti++;
     dist = dist >> 1;
