@@ -32,7 +32,7 @@ Bluetooth::Bluetooth(uint16_t piniConfig[], uint16_t baund)
 */
 Bluetooth* Bluetooth::getInstance(uint16_t piniConfig[], uint16_t baundRate)
 {
-  if (INSTANCE == 0)
+  if (INSTANCE == nullptr)
   {
     INSTANCE = new Bluetooth(piniConfig, baundRate);
   }
@@ -47,31 +47,32 @@ Bluetooth* Bluetooth::getInstance(uint16_t piniConfig[], uint16_t baundRate)
 */
 void Bluetooth::trimiteDateRaspberry(uint8_t data[5])
 {
-  int i; //iteratore");
+  int16_t i; //iteratore");
   uint8_t frame[9];
 
   construireFrame(data, frame); //construirea frame-ului care urmeaza sa fie transmis
 
   String transmite = frame; //conversia la tipul String
-  (*bt).print("\t"); //pentru asigurarea unei transmiteri complete
-  (*bt).println(transmite);
-  (*bt).print("\t"); //pentru asigurarea unei transmiteri complete
+  (*bt).println("\t"); //pentru asigurarea unei transmiteri complete
+  (*bt).println(""+transmite);
+  //(*bt).println("\t"); //pentru asigurarea unei transmiteri complete
 }
 
 uint16_t Bluetooth::primesteDateRaspberry()
 {
   String btdata;
-  Serial.println("Se incepe citirea de la Raspberry");
-  btdata = (*bt).read();
-  Serial.println("s - citit:\t"+btdata);
-  return decodificareFrame(btdata);
+  //Serial.println("Se incepe citirea de la Raspberry");
+  btdata =(*bt).read();
+  int volum = btdata.toInt();
+  Serial.println(volum);
+  return volum;
 }
 
-int16_t Bluetooth::decodificareFrame(String mesajVolum)
+uint8_t Bluetooth::decodificareFrame(uint8_t mesajVolum)
 {
-  Serial.println("in decodare");
-  uint8_t mesajDecod[5], volum;
-  uint8_t i = sizeof(mesajDecod) - 1; //iterator
+  
+  //Serial.println("in decodare");
+  /**uint8_t i = sizeof(mesajDecod) - 1; //iterator
   mesajVolum.toCharArray(mesajDecod, sizeof(mesajDecod));
 
   if (mesajDecod[i] != 'r')return -1;
@@ -87,8 +88,8 @@ int16_t Bluetooth::decodificareFrame(String mesajVolum)
   }
 
   if ((bitRead(mesajDecod[--i], 0) + sumaBiti) % 2 != 0) return -1;
-
-  return (int16_t) volum - '0';
+  */
+  return mesajVolum;
 }
 
 
@@ -108,8 +109,8 @@ void Bluetooth::construireFrame(uint8_t data[], uint8_t* frame)
   uint8_t endFrame = 'c';
   uint8_t detectParitate = 0;
   frame[0] = startFrame;
-  Serial.println("inainte de for");
-  for (i = 0; i <= sizeof(frame); i++)
+ //Serial.println(frame.length());
+  for (i = 0; i <= 4; i++)
   {
     frame[i + 1] = data[i];
     detectParitate = detectParitate << 1;//se shifteza continutul pentru a adauga urmatorul bit
