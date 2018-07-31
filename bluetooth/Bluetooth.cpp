@@ -45,15 +45,15 @@ Bluetooth* Bluetooth::getInstance(uint16_t piniConfig[], uint16_t baundRate)
    Aceasta comunicare se efectueaza prin intermediul unui dispozitiv Bluetooth.
    Pentru efectuarea comunicarii, folosim functiile din biblioteca SoftwareSerial.
 */
-void Bluetooth::trimiteDateRaspberry(uint8_t data[5])
+void Bluetooth::trimiteDateRaspberry(uint8_t data[5], uint16_t franaDeMana)
 {
   int16_t i; //iteratore");
   uint8_t frame[9];
 
-  construireFrame(data, frame); //construirea frame-ului care urmeaza sa fie transmis
+  construireFrame(data, frame, franaDeMana); //construirea frame-ului care urmeaza sa fie transmis
 
   String transmite = frame; //conversia la tipul String
-  (*bt).println("\t"); //pentru asigurarea unei transmiteri complete
+  //(*bt).println("\t"); //pentru asigurarea unei transmiteri complete
   (*bt).println(""+transmite);
   //(*bt).println("\t"); //pentru asigurarea unei transmiteri complete
 }
@@ -68,31 +68,6 @@ uint16_t Bluetooth::primesteDateRaspberry()
   return volum;
 }
 
-uint8_t Bluetooth::decodificareFrame(uint8_t mesajVolum)
-{
-  
-  //Serial.println("in decodare");
-  /**uint8_t i = sizeof(mesajDecod) - 1; //iterator
-  mesajVolum.toCharArray(mesajDecod, sizeof(mesajDecod));
-
-  if (mesajDecod[i] != 'r')return -1;
-
-  volum = mesajDecod[--i];
-  Serial.println(volum);
-  uint16_t sumaBiti = 0;//calculeaza suma bitilor de '1'
-  while (mesajDecod[i] != 0) {
-    Serial.println("in while:");
-    if (bitRead(mesajDecod[i], 0)) sumaBiti++;
-    mesajDecod[i] = mesajDecod[i] >> 1;
-    Serial.println(mesajDecod[i]);
-  }
-
-  if ((bitRead(mesajDecod[--i], 0) + sumaBiti) % 2 != 0) return -1;
-  */
-  return mesajVolum;
-}
-
-
 /**
    Functia construireFrame se ocupa direct cu asamblarea componentelor unui frame.
    Structura unui frame este urmatoarea:
@@ -102,7 +77,7 @@ uint8_t Bluetooth::decodificareFrame(uint8_t mesajVolum)
    -se adauga caracterul 'c' pentru a marca finalul frame-ului
    -se adauga caracterul '\0' pentru a marca sfarsitul sirului
 */
-void Bluetooth::construireFrame(uint8_t data[], uint8_t* frame)
+void Bluetooth::construireFrame(uint8_t data[], uint8_t* frame, uint16_t franaDeMana)
 {
   uint16_t i;//iterator
   uint8_t startFrame = 'r';
@@ -110,6 +85,9 @@ void Bluetooth::construireFrame(uint8_t data[], uint8_t* frame)
   uint8_t detectParitate = 0;
   frame[0] = startFrame;
  //Serial.println(frame.length());
+
+  if(franaDeMana) bitWrite(detectParitate, sizeof(detectParitate)/sizeof(int), 1);
+  
   for (i = 0; i <= 4; i++)
   {
     frame[i + 1] = data[i];
@@ -136,4 +114,3 @@ uint16_t Bluetooth::paritate(uint8_t dist)
   if ((sumaBiti % 2) == 0) return 0;
   return 1;
 }
-
