@@ -1,15 +1,14 @@
 import os
 import sys
 
-def decodificaFrame():
+def decodif():
     f = open("date.txt", "r")
-    s = []
+    bitOctet = []
 
     path = "./myfifo"
     fifo = open(path, "r")
     line = fifo.read()
     fifo.close()
-
     if f.mode == 'r':
         frameComplet = f.readlines()
         for octet in frameComplet:
@@ -21,17 +20,23 @@ def decodificaFrame():
                 detectieErori=bitOctet[6] #pregatesc parcurgerea unui octet bit cu bit
                 for pozitie in range (1,6):
                     print(bitOctet[pozitie]) #afisez lungimile
-                    print(s[6]) #afisez octetul de corectie
-                    print(detectieErori[k+1])#parcug octetul de corectie bit cu bit
-                    print("S["+str(pozitie)+"]"+" are "+str(s[pozitie].count('1'))+" biti de 1")
-                    if (s[pozitie].count('1')+int(detectieErori[pozitie+2]))%2==0:
+                    print(bitOctet[6]) #afisez octetul de corectie
+                    print(detectieErori[pozitie+1]) #parcurg octetul de corectie bit cu bit
+                    print("S["+str(pozitie)+"]"+" are "+str(bitOctet[pozitie].count('1'))+" biti de 1")
+
+                    if (bitOctet[pozitie].count('1')+int(detectieErori[pozitie+2]))%2==0:
                         print("Datele sunt corecte!")
-                        dist.append(str(int(str(s[pozitie]), 2)))
+                        lungimiSenzoriInDecimal.append(str(int(str(bitOctet[pozitie]), 2)))
                     else:
                         print("Datele sunt incorecte! Verificati bitii de paritate!")
-                if len(lungimiSenzoriInDecimal) == 5: #verific sa am 5 lungimi in fisier
-                    dist.append(detectieErori[0])  #pun si frana de mana
+                if len(lungimiSenzoriInDecimal) == 5:
+                    lungimiSenzoriInDecimal.append(detectieErori[7])
                     print(len(lungimiSenzoriInDecimal))
+
+                   # f = open("verif.txt", "a")
+                    #f.write(" ".join(dist))
+                    #f.write("\n")
+                    #f.close()
         if line=="Send data!\0":
             print ("Data request was send!")
             fifo = open(path, "w")

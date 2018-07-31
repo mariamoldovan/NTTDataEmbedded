@@ -36,7 +36,7 @@ def decodif():
                     else:
                         print("Datele sunt incorecte! Verificati bitii de paritate!")
                 if len(dist) == 5:
-                    dist.append(detec[0])
+                    dist.append(detec[7])
                     print(len(dist))
                     
                    # f = open("verif.txt", "a")
