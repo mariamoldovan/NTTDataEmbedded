@@ -8,7 +8,7 @@ class Bluetooth
 {
   public:
     static Bluetooth* getInstance(uint16_t piniConfig[], uint16_t baundRate);
-    void trimiteDateRaspberry(uint8_t data[5]);
+    void trimiteDateRaspberry(uint8_t data[5], uint16_t franaDemana);
     uint16_t primesteDateRaspberry();
     
   private:
@@ -17,9 +17,8 @@ class Bluetooth
     SoftwareSerial *bt;
 
     Bluetooth(uint16_t piniconfig[], uint16_t baund);
-    void construireFrame(uint8_t data[], uint8_t tramnsmite[9]);
+    void construireFrame(uint8_t data[], uint8_t tramnsmite[], uint16_t franaDeMana);
     uint16_t paritate(uint8_t dist);
-    uint8_t decodificareFrame(uint8_t mesajVolum); 
 };
 
 
