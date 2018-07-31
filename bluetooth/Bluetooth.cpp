@@ -58,6 +58,13 @@ void Bluetooth::trimiteDateRaspberry(uint8_t data[5], uint16_t franaDeMana)
   //(*bt).println("\t"); //pentru asigurarea unei transmiteri complete
 }
 
+/**
+ * Functia primesteDateRaspberry este utilizata pentru primirea de date de la 
+ * placuta Raspberry catre sistemul de parcare (placuta Arduino).
+ * Informatiile sunt transmise pe un byte si reprezinta valoarea
+ * volumului Buzzerului. 
+ */
+
 uint16_t Bluetooth::primesteDateRaspberry()
 {
   String btdata;
@@ -73,7 +80,8 @@ uint16_t Bluetooth::primesteDateRaspberry()
    Structura unui frame este urmatoarea:
    -se incepe cu litera 'r' pentru marcarea inceputului de frame
    -se adauga apoi informatiile transmise prin parametrul data
-   -se adauga un caracter pentru detectia erorilor
+   -se adauga un caracter pentru detectia erorilor; tot in acest caracter, bitul 7(cel mai din stanga)
+   serveste ca 'martor' pentru frana de mana
    -se adauga caracterul 'c' pentru a marca finalul frame-ului
    -se adauga caracterul '\0' pentru a marca sfarsitul sirului
 */

@@ -12,9 +12,9 @@ void setup()
 void loop()
 {
   Serial.println("de la Rasp");
-  //char dateDist[5] = {88, 199, 77, 21, 98};
-  //(*blue).trimiteDateRaspberry(dateDist);
-  uint16_t dist = (*blue).primesteDateRaspberry();
-  Serial.println("\t"+dist);
+  char dateDist[5] = {88, 199, 77, 21, 98};
+  (*blue).trimiteDateRaspberry(dateDist, 1);
+  //uint16_t dist = (*blue).primesteDateRaspberry();
+  //Serial.println("\t"+dist);
   delay(1000);
 }
