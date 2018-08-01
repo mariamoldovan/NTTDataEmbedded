@@ -30,7 +30,7 @@ def decodificareDate():
                     else:
                         print("Datele sunt incorecte! Verificati bitii de paritate!")
                 if len(lungimiSenzoriInDecimal) == 5: #verificare daca avem 5 lungimi in lista (daca primim o data gresita nu se adauga la linia 27)
-                    lungimiSenzoriInDecimal.append(detectieErori[7])
+                    lungimiSenzoriInDecimal.append(detectieErori[0])
                     print(len(lungimiSenzoriInDecimal))
 
                     #fisierCitireDate = open("verif.txt", "a")

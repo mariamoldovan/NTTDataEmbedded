@@ -1,5 +1,5 @@
 import bluetooth
-import decodif as AccesScripDecodif
+import decodificareDate as AccesScripDecodificare
 adresaBluetoothMAC = "20:16:10:20:52:66" #adresa mac bluetooth arduino
 portDeConectareRFCOMM = 1
 socket = bluetooth.BluetoothSocket (bluetooth.RFCOMM)
@@ -16,7 +16,7 @@ def primesteDeLaArduinoBT():
                 fisierScriereDate = open("date.txt", "a")
                 fisierScriereDate.write(datePrimiteBT)
 		fisierScriereDate.close()
-		AccesScripDecodif.decodif()
+		AccesScripDecodificare.decodificareDate()
                 datePrimiteBT = datePrimiteBT[datePrimiteBTend+1:]
         except KeyboardInterrupt:
             meniuControl()
