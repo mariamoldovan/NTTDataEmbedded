@@ -4,7 +4,6 @@ import sys
 def decodificareDate():
     fisierCitireDate = open("date.txt", "r")
     frameBinar = []
-
     locatieFifo = "/home/pi/Downloads/Senzor-1-AUG/FIFO/myfifo"
     fifoGUI = open(locatieFifo, "r")
     linieDateFifo = fifoGUI.read()

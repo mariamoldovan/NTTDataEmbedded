@@ -4,7 +4,6 @@ adresaBluetoothMAC = "20:16:10:20:52:66" #adresa mac bluetooth arduino
 portDeConectareRFCOMM = 1
 socket = bluetooth.BluetoothSocket (bluetooth.RFCOMM)
 socket.connect((adresaBluetoothMAC,portDeConectareRFCOMM))
-
 def primesteDeLaArduinoBT():
     datePrimiteBT=""
 

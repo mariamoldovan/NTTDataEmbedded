@@ -16,10 +16,11 @@ def primeste():
                 rec = data[:data_end]
                 #print(map(bin,bytearray(data)))
                 #print([ bin(ord(ch))[2:].zfill(8) for ch in data ])
-                f = open("date.txt", "a")
-                f.write(data)
-		f.close()
-		d.decodif()
+                #f = open("date.txt", "a")
+                #f.write(data)
+		#f.close()
+                frameBinar = [ bin(ord(ch))[2:].zfill(8) for ch in rec ]
+		d.decodif(frameBinar)
                 data = data[data_end+1:]
         except KeyboardInterrupt:
             meniu()
