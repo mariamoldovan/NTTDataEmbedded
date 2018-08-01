@@ -11,8 +11,8 @@ def primesteDeLaArduinoBT():
     while 1:
         try:
             datePrimiteBT+=socket.recv(1024)
-            datePrimiteBTend=datePrimiteBT.find('\n')
-            if datePrimiteBTend != -1:  #
+            datePrimiteBTend=datePrimiteBT.find('\n') #find returneaza -1 daca nu gaseste
+            if datePrimiteBTend != -1:  #daca gaseste \n continua programul 
                 fisierScriereDate = open("date.txt", "a")
                 fisierScriereDate.write(datePrimiteBT)
 		fisierScriereDate.close()
