@@ -30,7 +30,7 @@ def decodif():
                     else:
                         print("Datele sunt incorecte! Verificati bitii de paritate!")
                 if len(lungimiSenzoriInDecimal) == 5:
-                    lungimiSenzoriInDecimal.append(detectieErori[7])
+                    lungimiSenzoriInDecimal.append(detectieErori[0])
                     print(len(lungimiSenzoriInDecimal))
 
                    # f = open("verif.txt", "a")
