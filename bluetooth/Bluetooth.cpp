@@ -100,10 +100,13 @@ void Bluetooth::construireFrame(uint8_t distante[], uint8_t* frameTransmisie, ui
     }
   }
 
-  if (franaDeMana == 1) 
+  if (franaDeMana != 0) 
   {
     bitWrite(detectParitate, 7, 1);
   }
+
+  bitWrite(detectParitate, 6, 1);// prin aceasta instructiune se asigura faptul ca valoarea transmisa pentru 
+  //detectia de erorii nu este niciodata 0000 0000 == NULL in ASCII
 
   frameTransmisie[6] = detectParitate;
   frameTransmisie[7] = endFrame;
