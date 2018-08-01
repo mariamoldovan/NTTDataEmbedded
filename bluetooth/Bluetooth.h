@@ -1,4 +1,4 @@
-#ifndef BT
+#ifndef bluetoothCommunication
 #define BT
 
 #include "Arduino.h"
@@ -7,18 +7,18 @@
 class Bluetooth
 {
   public:
-    static Bluetooth* getInstance(uint16_t piniConfig[], uint16_t baundRate);
-    void trimiteDateRaspberry(uint8_t data[5], uint16_t franaDemana);
-    uint16_t primesteDateRaspberry();
+    static Bluetooth* getInstance(uint16_t piniConfig[], uint16_t baudeRate);
+    void trimiteDateRaspberry(uint8_t distante[5], uint16_t franaDeMana);
+    uint8_t primesteDateRaspberry();
     
   private:
     uint16_t pini[];
     static Bluetooth* INSTANCE;
-    SoftwareSerial *bt;
+    SoftwareSerial *bluetoothCommunication;
 
-    Bluetooth(uint16_t piniconfig[], uint16_t baund);
-    void construireFrame(uint8_t data[], uint8_t tramnsmite[], uint16_t franaDeMana);
-    uint16_t paritate(uint8_t dist);
+    Bluetooth(uint16_t piniConfig[], uint16_t baudeRate);
+    void construireFrame(uint8_t distante[], uint8_t frameTransmisie[], uint16_t franaDeMana);
+    uint8_t calculParitate(uint8_t dist);
 };
 
 
