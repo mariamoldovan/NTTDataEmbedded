@@ -2,7 +2,7 @@ import SendRec as sr
 
 while True:
     try:
-        sr.receive()
+        #sr.receive()
         sr.send()
     except KeyboardInterrupt:
         break
